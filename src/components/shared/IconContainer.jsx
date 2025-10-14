@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { motion } from 'motion/react'
-function IconContainer({icon,title,handler}) {
+function IconContainer({icon,title,handler,children}) {
     const [visible,setVisible]=useState(false)
   return (
     <div onClick={handler} onMouseEnter={()=>setVisible(true)}  onMouseLeave={()=>setVisible(false)} className='size-10
@@ -15,6 +15,8 @@ function IconContainer({icon,title,handler}) {
         transition={{duration:0.25,ease:"easeInOut"}}
          className='absolute -bottom-8 bg-[#595959]
          text-white text-xs px-2 py-1 rounded w-fit block text-nowrap'>{title}</motion.span>}
+
+         {children}
        </div>
   )
 }

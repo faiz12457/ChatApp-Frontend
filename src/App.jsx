@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, lazy } from "react";
+import React, { useEffect, useMemo, lazy, Suspense } from "react";
 import { io } from "socket.io-client";
 import {
   createBrowserRouter,
@@ -97,10 +97,13 @@ function App() {
     }
   ]);
 
-  return status === "pending" ? (
+  return status === "" ? (
     <p>Loading...</p>
   ) : (
+    <Suspense fallback={<p>Loading...</p>}>
     <RouterProvider router={router} />
+
+    </Suspense>
   );
 }
 

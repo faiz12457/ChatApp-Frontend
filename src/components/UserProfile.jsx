@@ -8,7 +8,7 @@ function UserProfile({user}) {
             <div className="h-full  box-border  justify-center bg-[rgba(0,0,0,0.85)] p-8 hidden md:flex">
 
              <div className='flex h-full flex-col items-center gap-5' >
-                <img src="./favicon.svg" className="size-48 border-4 p-1 border-white rounded-full object-cover" />
+                <img src={user?.profilePic || "/favicon.svg"} alt='profilePic' className="size-48 border-4 p-1 border-white rounded-full object-cover" />
 
                 <div className="text-white text-base  text-center">
                     <p>{user?.bio}</p>

@@ -8,18 +8,18 @@ function ProtectedRoute({ Component }) {
   const navigate = useNavigate();
   const loginUser = useSelector(selectLoginUser);
 
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      navigate("/login");
-      return;
-    } else if (token && loginUser?.isVerified === false) {
-      navigate("/verifyOtp");
-      return;
-    }
+  // useEffect(() => {
+  //   const token = localStorage.getItem("accessToken");
+  //   if (!token) {
+  //     navigate("/login");
+  //     return;
+  //   } else if (token && loginUser?.isVerified === false) {
+  //     navigate("/verifyOtp");
+  //     return;
+  //   }
 
     
-  }, [loginUser]);
+  // }, [loginUser]);
 
   return <>{Component}</>;
 }

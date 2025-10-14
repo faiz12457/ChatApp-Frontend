@@ -1,5 +1,5 @@
 import React from 'react'
-import { appLayout } from '../components/HOC/appLayout'
+import { AppLayout } from '../components/HOC/appLayout'
 
 function Chat() {
   return (
@@ -7,4 +7,4 @@ function Chat() {
   )
 }
 
-export default appLayout(Chat);
+export default AppLayout()(Chat);
