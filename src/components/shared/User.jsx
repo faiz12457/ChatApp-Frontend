@@ -1,7 +1,8 @@
 import { memo } from "react"
 import { MdAdd } from "react-icons/md";
 import { motion } from 'motion/react';
-function User({user={},handler=()=>{},handleIsLoading}){
+import { FiMinus } from "react-icons/fi";
+function User({user={},handler=()=>{},handleIsLoading,isAdded=false}){
     const {_id,name,email}=user;
   return (
     <div className=' px-4 flex items-center gap-3 py-2  '>
@@ -20,11 +21,13 @@ function User({user={},handler=()=>{},handleIsLoading}){
      onClick={()=>handler(_id)}
      disabled={handleIsLoading}
     
-    className='bg-[#1976D2] ml-auto size-9
+    className={` ml-auto size-9
     
      cursor-pointer rounded-full
-      flex justify-center items-center text-white disabled:opacity-40 disabled:cursor-not-allowed'>
-   <MdAdd size={22} />
+      flex justify-center items-center text-white disabled:opacity-40 disabled:cursor-not-allowed
+       ${!isAdded?"bg-[#1976D2]":"bg-[#D32F2F]"}`}>
+      {isAdded?<FiMinus size={22} /> :  <MdAdd size={22} />}
+ 
     </motion.button>
 
     </div>
