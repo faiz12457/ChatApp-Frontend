@@ -11,10 +11,12 @@ import {
   selectLoggedInStatus,
 } from "./redux/slices/auth/authSlice";
 import NotFound from "./pages/NotFound";
+import Loader from "./Loaders/Loader";
 
 
 
 
+const AdminDashboard =lazy(()=>import("./pages/admin/AdminDashboard"));
 
 const VerifyOpt=lazy(()=>import("./pages/auth/VerifyOpt"));
 const ForgotPassword =lazy(()=>import("./pages/auth/ForgotPassword"))
@@ -91,16 +93,22 @@ function App() {
       element:<ResetPassword />
     },
 
+
+    {
+      path:"/admin/dashboard",
+      element:<AdminDashboard />
+    },
+
     {
       path:'*',
       element:<NotFound />
     }
   ]);
 
-  return status === "" ? (
-    <p>Loading...</p>
+  return status === "pending" ? (
+    <div className="w-full h-screen grid place-content-center"><Loader /></div>
   ) : (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<div className="w-full h-screen grid place-content-center"><Loader /></div>}>
     <RouterProvider router={router} />
 
     </Suspense>

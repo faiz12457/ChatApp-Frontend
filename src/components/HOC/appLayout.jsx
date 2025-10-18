@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 
 export const AppLayout = () =>(Component)=> {
    
-  return function (prop) {
+  return function (...prop) {
 
      const user=useSelector(selectLoginUser);
      const params=useParams();
@@ -26,16 +26,17 @@ export const AppLayout = () =>(Component)=> {
         <Title />
         <Header />
 
-        <div className="grid grid-cols-1  sm:grid-cols-[1fr_2fr]
+        <div className="grid grid-cols-1   sm:grid-cols-[1fr_2fr]
          md:grid-cols-[1fr_2fr_1fr]   h-[calc(100vh-4rem)] ">
             <div className="hidden sm:block  h-full">
                <ChatList handleDeleteChat={handleDeleteChat} />
             </div>
+ 
+            <div className="h-full"><Component {...prop} /></div>
 
-            <div className="h-full   text-"><Component {...prop} /></div>
-
-
+           
             <UserProfile user={user} />
+            
         </div>
         
       </>
