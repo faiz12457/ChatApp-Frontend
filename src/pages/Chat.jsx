@@ -14,7 +14,8 @@ function Chat() {
   const [message,setMessage]=useState("");
   function handleSubmit(e) {
     e.preventDefault();
-   
+    
+    console.log('Submitted')
     setChats((prev)=>[...prev,message]);
     setMessage("");
   }

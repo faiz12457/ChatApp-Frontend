@@ -17,7 +17,7 @@ const UploadMenu = ({ ref }) => {
   const handleFileChange = (event, type) => {
     const file = event.target.files;
     if (file) {
-      console.log(`Uploaded ${type}:`, file.name);
+      console.log(`Uploaded ${type}:`, file);
       // You can handle file upload logic here (send to backend, preview, etc.)
     }
   };
@@ -71,6 +71,7 @@ const UploadMenu = ({ ref }) => {
       {menuItems.map((item, index) => (
         <div key={index}>
           <button
+          type="button"
             onClick={() => handleUpload(item.ref)}
             className="flex items-center gap-3 w-full px-3 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
           >

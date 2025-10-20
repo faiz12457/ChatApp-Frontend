@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import Title from "../shared/Title";
+
 import Header from "./Header";
 import { selectLoginUser } from "../../redux/slices/auth/authSlice";
 import UserProfile from "../UserProfile";
@@ -23,7 +23,7 @@ export const AppLayout = () =>(Component)=> {
 
     return (
       <>
-        <Title />
+        
         <Header />
 
         <div className="grid grid-cols-1   sm:grid-cols-[1fr_2fr]

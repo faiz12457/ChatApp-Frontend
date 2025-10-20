@@ -9,10 +9,10 @@ export const loginSchema = yup.object().shape({
 
   password: yup
     .string()
-    .min(8, "Password must be at least 8 characters")
-    .matches(passRules, {
-      message:
-        "Password must include upper and lower case, number, and special character",
-    })
+    // .min(8, "Password must be at least 8 characters")
+    // .matches(passRules, {
+    //   message:
+    //     "Password must include upper and lower case, number, and special character",
+    // })
     .required('Password is required'),
 });

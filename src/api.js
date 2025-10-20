@@ -1,11 +1,9 @@
+import axios from "axios";
 
-import axios from "axios"
-
-export const api=axios.create({
-    baseURL:import.meta.env.VITE_LOCAL_URL,
-    withCredentials:true,
-})
-
+export const api = axios.create({
+  baseURL: import.meta.env.VITE_LOCAL_URL,
+  withCredentials: true,
+});
 
 api.interceptors.request.use(
   (config) => {
@@ -20,27 +18,73 @@ api.interceptors.request.use(
   }
 );
 
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
+// Attach token to every request
+
+// Response interceptor with refresh token logic
 api.interceptors.response.use(
-  (res) => res,
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return api(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
+
       try {
         const res = await api.post("/auth/refresh");
         const newAccessToken = res.data.accessToken;
+
+        if (!newAccessToken)
+          throw new Error("No access token in refresh response");
         localStorage.setItem("accessToken", newAccessToken);
 
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+        // Set for all future requests
+        api.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${newAccessToken}`;
 
+        processQueue(null, newToken);
+
+        // Retry original request with new token
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return api(originalRequest);
-      } catch (error) {
+      } catch (refreshError) {
+        processQueue(refreshError, null);
         localStorage.removeItem("accessToken");
         window.location.href = "/login";
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
+
     return Promise.reject(error);
   }
 );
+
 export default api;
