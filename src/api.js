@@ -4,6 +4,8 @@ const url=import.meta.env.VITE_LOCAL_URL
 export const api = axios.create({
   baseURL: url,
   withCredentials: true,
+  timeout: 30000
+
 });
 
 api.interceptors.request.use(
