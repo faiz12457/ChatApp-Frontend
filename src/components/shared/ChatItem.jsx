@@ -13,15 +13,16 @@ function ChatItem({
   index,
   sameSender,
   newMessageAlert=true,
-  id,setId
+  id,setId,
+  selected,setSelected
 }) {
-    const [position,setPosition]=useState({left:null,top:null})  
-    const [visible,setVisble]=useState(false)
+   
+  
 
     function handleContextMenu(e,currId){
       e.preventDefault()
       setId(currId);
-setPosition((prev) => ({ ...prev, left: e.clientX, top: e.clientY }));
+          setSelected(currId)
 
 //handleDeleteChat(e,_id,groupChat)
 
@@ -32,11 +33,11 @@ setPosition((prev) => ({ ...prev, left: e.clientX, top: e.clientY }));
   return (
     <>
     <NavLink to={`/chat/${_id}`}>
-      <div onClick={()=>setVisble(!visible)} onContextMenu={(e)=>handleContextMenu(e,_id)}
-        className={`h-20 p-4 bg-amber-700  w-full  relative
-     hover:bg-[#F7F7F7] transition-colors 
+      <div onClick={()=>setSelected(_id)} onContextMenu={(e)=>handleContextMenu(e,_id)}
+        className={`h-20  p-4 bg-amber-700  w-full  relative
+      transition-colors  duration-150
      cursor-pointer flex items-center gap-7 ${
-       sameSender ? "bg-zinc-300 " : "bg-white"
+       selected==_id ? "bg-zinc-200 " : "bg-zinc-50"
      } `}
       >
         <img
@@ -59,7 +60,7 @@ setPosition((prev) => ({ ...prev, left: e.clientX, top: e.clientY }));
         
      <AnimatePresence>
         {id==_id && (
-          <DeleteChat key="delete-chat" position={position} 
+          <DeleteChat key="delete-chat" 
           handleDeleteChat={handleDeleteChat}
            id={_id}
            groupChat={groupChat} setId={setId} />

@@ -9,14 +9,15 @@ function ChatList({
 }
 ) {
 
-  const [id,setId]=useState(false);
+  const [id,setId]=useState(null);
+  const [selected,setSelected]=useState(null);
   return <div className="w-full divide-y divide-gray-300 bg-amber-300 flex flex-col">
 
     {
         chats?.map((data,index)=>{
         
              return (
-                <ChatItem  setId={setId} id={id} _id={data}  handleDeleteChat={handleDeleteChat} index={index} />
+                <ChatItem  selected={selected} setSelected={setSelected} setId={setId} id={id} _id={data}  handleDeleteChat={handleDeleteChat} index={index} />
              )
         })
     }

@@ -3,16 +3,16 @@ import { createPortal } from "react-dom";
 import { MdDelete } from "react-icons/md";
 import { AnimatePresence, motion } from "motion/react";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
-function DeleteChat({position,id,groupChat,handleDeleteChat,setId}) {
+function DeleteChat({id,groupChat,handleDeleteChat,setId}) {
 
   const ref=useOutsideClick(()=>{setId(false)});
- // if(!position.left) return 
+
   return (
    
     <motion.div
     ref={ref}
     onClick={()=>{
-      setId(false)
+      setId(null)
       handleDeleteChat(id,groupChat) 
     }}
      initial={{scale:0.8,opacity:0}}

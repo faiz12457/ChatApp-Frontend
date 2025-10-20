@@ -1,7 +1,8 @@
 import axios from "axios";
 
+const url=import.meta.env.VITE_LOCAL_URL
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_LOCAL_URL,
+  baseURL: url,
   withCredentials: true,
 });
 
@@ -56,7 +57,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await api.post("/auth/refresh");
+        const res = await axios.post(`${url}/auth/refresh`);
         const newAccessToken = res.data.accessToken;
 
         if (!newAccessToken)
@@ -68,7 +69,7 @@ api.interceptors.response.use(
           "Authorization"
         ] = `Bearer ${newAccessToken}`;
 
-        processQueue(null, newToken);
+        processQueue(null, newAccessToken);
 
         // Retry original request with new token
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
