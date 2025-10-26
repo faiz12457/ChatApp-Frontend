@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { FaImage, FaMusic, FaVideo, FaFileUpload } from "react-icons/fa";
 import { motion } from "motion/react";
 
-const UploadMenu = ({ ref }) => {
+const UploadMenu = ({ ref,setImages }) => {
   const imageInputRef = useRef(null);
   const audioInputRef = useRef(null);
   const videoInputRef = useRef(null);
@@ -17,8 +17,7 @@ const UploadMenu = ({ ref }) => {
   const handleFileChange = (event, type) => {
     const file = event.target.files;
     if (file) {
-      console.log(`Uploaded ${type}:`, file);
-     
+      setImages(file);
     }
   };
 

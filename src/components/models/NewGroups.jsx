@@ -2,8 +2,21 @@ import React from 'react'
 import User from '../shared/User'
 import { IoSearchOutline } from "react-icons/io5";
 import { motion } from 'motion/react';
+import { useQuery } from '@tanstack/react-query';
+import api from '../../api';
 
 function NewGroups() {
+
+   
+
+    const {data,isLoading}=useQuery({
+       queryKey:['friends'],
+       queryFn:async()=>{
+            const res=await api.get("/user/getFriends");
+            return res.data
+       }
+      })
+
   return (
       <div className=' min-w-[320px] max-w-[350px] p-8 rounded  bg-white      space-y-4'> 
           <p className='text-black text-center text-xl'>New Group</p>
@@ -18,7 +31,7 @@ function NewGroups() {
            <p className='font-medium'>Members</p>
             <div className='space-y-2 max-h-[300px]  overflow-y-auto'>
             {
-              Array.from({length:2}).map(()=>   <User />)
+             data?.friends?.map((user)=>   <User key={user._id} user={user} />)
             }
            
               

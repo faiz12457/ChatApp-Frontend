@@ -3,7 +3,7 @@ import LogoutButton from '../components/auth/LogoutButton'
 import { AppLayout } from '../components/HOC/appLayout'
 import { grey } from '../constraints/colors'
 
-function Home({socket}) {
+function Home() {
   return (
     <div className='h-full w-full 
     '  style={{backgroundColor:grey}}>

@@ -3,7 +3,7 @@ import { getFileFormat } from "../../features/getFileFormat";
 import { transformImage } from "../../features/transformImg";
 
 function RenderAttachment({ file, url = "" }) {
-  const format = getFileFormat();
+  const format = getFileFormat(url);
   switch (format) {
     case "video":
       return <video src={url} preload="none" controls width={"200px"} />;

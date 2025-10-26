@@ -3,14 +3,14 @@ import { MdAdd } from "react-icons/md";
 import { motion } from 'motion/react';
 import { FiMinus } from "react-icons/fi";
 function User({user={},handler=()=>{},handleIsLoading,isAdded=false}){
-    const {_id,name,email}=user;
+      const {_id,userName,email,profilePic}=user;
   return (
     <div className=' px-4 flex items-center gap-3 py-2  '>
 
-     <img src='/favicon.svg' className='rounded-full object-cover size-10' />
+     <img src={profilePic?.url||'/favicon.svg'} loading="lazy" className='rounded-full object-cover size-10' />
      <div className="min-w-0 flex-1">
-       <p className='text-base  font-medium truncate'>M Faiz Rizvi</p>
-     <span className='text-xs text-gray-500 truncate'>faizrizvi45@gmail.com</span>
+       <p className='text-base  font-medium truncate'>{userName}</p>
+     <span className='text-xs text-gray-500 truncate'>{email}</span>
      </div>
     
     <motion.button 

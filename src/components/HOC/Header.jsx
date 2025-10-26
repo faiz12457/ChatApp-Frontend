@@ -24,17 +24,17 @@ function Header() {
 
 
     function openSearchPortal(){
-      console.log('open search portal')
+      
       setSearch((prev)=>!prev);
     }
 
     function openNewGroup(){
-      console.log('new Group')
+   
       setNewGroup((prev)=>!prev)
     }
 
     function openNotifications(){
-      console.log('open notifications')
+     
       setNotification((prev)=>!prev)
     }
 

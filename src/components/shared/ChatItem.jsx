@@ -2,11 +2,11 @@ import React,{memo, useEffect, useState} from "react";
 import { NavLink } from "react-router-dom";
 import DeleteChat from "../models/DeleteChat";
 import { AnimatePresence, useScroll } from "motion/react";
+import { useSelector } from "react-redux";
+import { selectLoginUser } from "../../redux/slices/auth/authSlice";
 
 function ChatItem({
   handleDeleteChat,
-  profile=null,
-  name="Faiz",
   isOnline=true,
   _id = "232",
   groupChat = false,
@@ -14,10 +14,13 @@ function ChatItem({
   sameSender,
   newMessageAlert=true,
   id,setId,
-  selected,setSelected
+  selected,setSelected,
+  data
 }) {
    
-  
+  const user=useSelector(selectLoginUser)
+ const friend= data.participants.find(p => p._id !== user._id);
+
 
     function handleContextMenu(e,currId){
       e.preventDefault()
@@ -32,7 +35,7 @@ function ChatItem({
     
   return (
     <>
-    <NavLink to={`/chat/${_id}`}>
+    <NavLink to={`/chat/${data._id}`} state={{participants:data.participants}}>
       <div onClick={()=>setSelected(_id)} onContextMenu={(e)=>handleContextMenu(e,_id)}
         className={`h-20  p-4 bg-amber-700  w-full  relative
       transition-colors  duration-150
@@ -41,12 +44,12 @@ function ChatItem({
      } `}
       >
         <img
-          src={profile||'/favicon.svg'}
+          src={friend?.profilePic?.url||'/favicon.svg'}
           className="size-12 rounded-full object-cover "
         />
         <div>
           <p className="text-xl mix-blend-difference font-medium text-white">
-            {name}
+            {friend.userName}
           </p>
 
           {newMessageAlert && (

@@ -1,10 +1,6 @@
 import React, { useEffect, useMemo, lazy, Suspense } from "react";
 import { io } from "socket.io-client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getCurrentUserThunk,
@@ -13,60 +9,38 @@ import {
 import NotFound from "./pages/NotFound";
 import Loader from "./Loaders/Loader";
 
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 
-
-
-const AdminDashboard =lazy(()=>import("./pages/admin/AdminDashboard"));
-
-const VerifyOpt=lazy(()=>import("./pages/auth/VerifyOpt"));
-const ForgotPassword =lazy(()=>import("./pages/auth/ForgotPassword"))
-const ProtectedRoute=lazy(()=>import("./components/auth/ProtectedRoute")) ;
-const Register=lazy(()=>import("./pages/auth/Register"))
-const ResetPassword = lazy(()=>import("./pages/auth/ResetPassword")) ;
+const VerifyOpt = lazy(() => import("./pages/auth/VerifyOpt"));
+const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
+const ProtectedRoute = lazy(() => import("./components/auth/ProtectedRoute"));
+const Register = lazy(() => import("./pages/auth/Register"));
+const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
 const Login = lazy(() => import("./pages/auth/Login"));
 const Home = lazy(() => import("./pages/Home"));
 const Group = lazy(() => import("./pages/Group"));
 const About = lazy(() => import("./pages/About"));
-const Chat=lazy(()=>import("./pages/Chat"))
+const Chat = lazy(() => import("./pages/Chat"));
 
-
-const socket=io(import.meta.env.VITE_LOCAL_URL);
 function App() {
- // const socket = useMemo(() => io(import.meta.env.VITE_LOCAL_URL),[]);
-  const dispatch = useDispatch();
-
-  const status = useSelector(selectLoggedInStatus);
-
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-
-    if (token) {
-      dispatch(getCurrentUserThunk());
-    }
-  }, []);
-
-
-
-
-
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <ProtectedRoute Component={<Home socket={socket} />} /> ,
+      element: <ProtectedRoute Component={<Home />} />,
     },
     {
       path: "/about",
-      element: <ProtectedRoute Component={<About />} /> ,
+      element: <ProtectedRoute Component={<About />} />,
     },
 
     {
       path: "/chat/:chatId",
-      element: <ProtectedRoute Component={<Chat />} /> ,
+      element: <ProtectedRoute Component={<Chat />} />,
     },
 
     {
       path: "/groups",
-      element:<ProtectedRoute Component={<Group />} /> ,
+      element: <ProtectedRoute Component={<Group />} />,
     },
 
     {
@@ -84,33 +58,35 @@ function App() {
     },
 
     {
-      path:'/forgotPassword',
-      element:<ForgotPassword />
+      path: "/forgotPassword",
+      element: <ForgotPassword />,
     },
 
     {
-      path:'/reset-password/:userId',
-      element:<ResetPassword />
-    },
-
-
-    {
-      path:"/admin/dashboard",
-      element:<AdminDashboard />
+      path: "/reset-password/:userId",
+      element: <ResetPassword />,
     },
 
     {
-      path:'*',
-      element:<NotFound />
-    }
+      path: "/admin/dashboard",
+      element: <AdminDashboard />,
+    },
+
+    {
+      path: "*",
+      element: <NotFound />,
+    },
   ]);
 
-  return status === "pending" ? (
-    <div className="w-full h-screen grid place-content-center"><Loader /></div>
-  ) : (
-    <Suspense fallback={<div className="w-full h-screen grid place-content-center"><Loader /></div>}>
-    <RouterProvider router={router} />
-
+  return (
+    <Suspense
+      fallback={
+        <div className="w-full h-screen grid place-content-center">
+          <Loader />
+        </div>
+      }
+    >
+      <RouterProvider router={router} />
     </Suspense>
   );
 }
