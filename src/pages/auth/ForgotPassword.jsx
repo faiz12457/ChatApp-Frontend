@@ -9,6 +9,7 @@ import api from "../../api"
 import { ForgotPassSchema } from "../../schemas/forgotPasswordSchema";
 import AuthInput from "../../components/auth/AuthInput";
 import { AuthButton } from "../../components/auth/AuthButton";
+import { showToast } from "../../Toast/toast";
 
 
  const ForgotPassword=()=> {
@@ -19,17 +20,7 @@ import { AuthButton } from "../../components/auth/AuthButton";
       const res = await api.post("/auth/forgotPassword", values);
       if (res.status === 200) {
         setSend(true);
-        toast.success(res.data.message, {
-          position: "top-center",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: false,
-          progress: undefined,
-          theme: "light",
-          transition: Slide,
-        });
+       showToast.success(res.data.message)
       }
     } catch (error) {
     } finally {

@@ -1,60 +1,40 @@
+import { Slide, toast } from "react-toastify";
 
-import { toast, Slide } from "react-toastify";
+const defaultOptions = {
+  position: "top-right",
+  autoClose: 1000,
+  hideProgressBar: true,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: false,
+  progress: undefined,
+  theme: "light",
+  transition: Slide,
+};
 
 export const showToast = {
-  success: (message) => {
-    toast.success(message, {
-      position: "top-right",
-      autoClose: 1000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: false,
-      progress: undefined,
-      theme: "light",
-      transition: Slide,
-    });
-  },
+  success: (msg) => toast.success(msg, defaultOptions),
+  error: (msg) => toast.error(msg, defaultOptions),
+  warning: (msg) => toast.warn(msg, defaultOptions),
+  loading: (msg = "Loading...") =>
+    toast.loading(msg, { ...defaultOptions, autoClose: false }),
 
-  error: (message) => {
-    toast.error(message, {
-      position: "top-right",
-      autoClose: 1000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: false,
-      progress: undefined,
-      theme: "light",
-      transition: Slide,
-    });
-  },
+  updateSuccess: (toastId, message = "Success") =>
+    toast.update(toastId, {
+      render: message,
+      type: "success",
+      isLoading: false,
+      autoClose: 1500,
+      ...defaultOptions,
+    }),
 
-  warning: (message) => {
-    toast.warn(message, {
-      position: "top-right",
-      autoClose: 1000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: false,
-      progress: undefined,
-      theme: "light",
-      transition: Slide,
-    });
-  },
-
-  loading: (message) => {
-    toast.loading(message, {
-      position: "top-right",
-      autoClose: false,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: false,
-      progress: undefined,
-      theme: "light",
-      transition: Slide,
-    });
-  },
+  // ✅ NEW: update loading toast to error
+  updateError: (toastId, message = "Error") =>
+    toast.update(toastId, {
+      render: message,
+      type: "error",
+      isLoading: false,
+      autoClose: 1500,
+      ...defaultOptions,
+    }),
 };

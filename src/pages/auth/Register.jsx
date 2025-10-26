@@ -14,24 +14,23 @@ import {
 } from "../../redux/slices/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Slide, toast } from "react-toastify";
+import { showToast } from "../../Toast/toast";
 
 function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const registerStatus = useSelector(selectRegisterUserStatus);
   const loginUser = useSelector(selectLoginUser);
-  const registerError=useSelector(selectRegisterUserErrors);
+  const registerError = useSelector(selectRegisterUserErrors);
 
-  
-  
-      useEffect(() => {
-      const token = localStorage.getItem("accessToken");
-      if (token && loginUser?.isVerified) {
-        navigate("/");
-      } else if (token && loginUser?.isVerified == false) {
-        navigate("/verifyOtp");
-      }
-    }, [loginUser]);
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token && loginUser?.isVerified) {
+      navigate("/");
+    } else if (token && loginUser?.isVerified == false) {
+      navigate("/verifyOtp");
+    }
+  }, [loginUser]);
 
   async function onSubmit(values, actions) {
     try {
@@ -49,42 +48,21 @@ function Register() {
 
   useEffect(() => {
     if (registerStatus === "fullfilled") {
-      toast.success("Welcome! Verify your email to start Chating.", {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
+      showToast.success("Welcome! Verify your email to start Chating.");
       localStorage.setItem("accessToken", loginUser?.accessToken);
 
       navigate("/verifyOtp");
     }
   }, [registerStatus]);
 
-   useEffect(()=>{
-    if(registerError){
-        toast.error(registerError, {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
-           
+  useEffect(() => {
+    if (registerError) {
+      showToast.error(registerError);
     }
 
     dispatch(resetRegisterUserStatus());
     dispatch(resetRegisterUserErrors());
-  },[registerError])
+  }, [registerError]);
 
   const formik = useFormik({
     initialValues: {

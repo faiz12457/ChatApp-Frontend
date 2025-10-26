@@ -10,7 +10,7 @@ const UploadMenu = ({ ref }) => {
 
   const handleUpload = (ref) => {
     if (ref.current) {
-      ref.current.click(); // trigger file input
+      ref.current.click(); 
     }
   };
 
@@ -18,7 +18,7 @@ const UploadMenu = ({ ref }) => {
     const file = event.target.files;
     if (file) {
       console.log(`Uploaded ${type}:`, file);
-      // You can handle file upload logic here (send to backend, preview, etc.)
+     
     }
   };
 

@@ -1,12 +1,12 @@
 import { useFormik } from "formik";
 import React, { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import api from "../../api"
+import api from "../../api";
 import { Slide, toast } from "react-toastify";
 import { ResetPasswordSchema } from "../../schemas/resetPasswordSchema";
 import AuthInput from "../../components/auth/AuthInput";
 import { AuthButton } from "../../components/auth/AuthButton";
-
+import { showToast } from "../../Toast/toast";
 
 export default function ResetPassword() {
   const { userId } = useParams();
@@ -31,30 +31,10 @@ export default function ResetPassword() {
 
       const res = await api.post("/auth/resetPassword", values);
       if (res.status === 200) {
-        toast.success(res.data.message, {
-          position: "top-center",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: false,
-          progress: undefined,
-          theme: "light",
-          transition: Slide,
-        });
+        showToast.success(res.data.message);
       }
     } catch (error) {
-      toast.error(error.response.data.message, {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
+      showToast.error(error.response.data.message);
     } finally {
       actions.setSubmitting(false);
       actions.resetForm();
@@ -119,5 +99,3 @@ export default function ResetPassword() {
     </div>
   );
 }
-
-

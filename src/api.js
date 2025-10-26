@@ -1,11 +1,10 @@
 import axios from "axios";
 
-const url=import.meta.env.VITE_LOCAL_URL
+const url = import.meta.env.VITE_LOCAL_URL;
 export const api = axios.create({
   baseURL: url,
   withCredentials: true,
-  timeout: 30000
-
+  timeout: 30000,
 });
 
 api.interceptors.request.use(
@@ -59,11 +58,17 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await axios.post(`${url}/auth/refresh`);
+        const res = await axios.post(
+          `${url}/auth/refresh`,
+          {},
+          { withCredentials: true }
+        );
+
         const newAccessToken = res.data.accessToken;
 
         if (!newAccessToken)
           throw new Error("No access token in refresh response");
+
         localStorage.setItem("accessToken", newAccessToken);
 
         // Set for all future requests
@@ -78,7 +83,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        localStorage.removeItem("accessToken");
+         localStorage.removeItem("accessToken");
         window.location.href = "/login";
         return Promise.reject(refreshError);
       } finally {

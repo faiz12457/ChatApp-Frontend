@@ -14,6 +14,7 @@ import {
   selectLoginUser,
 } from "../../redux/slices/auth/authSlice";
 import { Slide, toast } from "react-toastify";
+import { showToast } from "../../Toast/toast";
 
 function Login() {
   const dispatch = useDispatch();
@@ -48,33 +49,13 @@ function Login() {
   useEffect(() => {
     if (loginStatus === "fullfilled" && loginUser.isVerified == true) {
         
-      toast.success("Login Successfull", {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
+      showToast.success("Login Successfull")
 
       navigate("/");
     }
 
     if (loginStatus === "fullfilled" && loginUser.isVerified == false) {
-      toast.success("Login Successfull", {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
+    showToast.success("Login Successfull, Verify ")
 
       navigate("/verifyOtp");
     }
@@ -85,17 +66,7 @@ function Login() {
 
   useEffect(() => {
     if (loginErrors) {
-      toast.error(loginErrors, {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
+    showToast.error(loginErrors)
     }
   }, [loginErrors]);
 

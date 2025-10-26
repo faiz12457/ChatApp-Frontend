@@ -16,11 +16,12 @@ import {
   selectVerifyOtpStatus,
   setUserVerfied,
   verifyOtpThunk,
-} from "../../redux/slices/auth/authSlice" ;
+} from "../../redux/slices/auth/authSlice";
 import { Slide, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { showToast } from "../../Toast/toast";
 
- const VerifyOpt=()=> {
+const VerifyOpt = () => {
   const [otp, setOtp] = useState(Array(4).fill(""));
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
@@ -34,34 +35,19 @@ import { useNavigate } from "react-router-dom";
   useEffect(() => {
     if (verifyOtpStatus == "pending") {
       setIsVerify(true);
+    } else {
+      setIsVerify(false);
     }
-    else {
-        setIsVerify(false);
-    }
-    
 
     if (verifyOtpStatus == "fullfilled") {
-       dispatch(setUserVerfied());
-      toast.success("OTP Verified", {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
+      dispatch(setUserVerfied());
+      showToast.success("OTP Verified");
 
-       navigate("/");
-
+      navigate("/");
     }
 
-      dispatch(resetVerifyOtpStatus());
-       dispatch(resetVerifyOtpErrors());
-           
-          
+    dispatch(resetVerifyOtpStatus());
+    dispatch(resetVerifyOtpErrors());
   }, [verifyOtpStatus]);
 
   useEffect(() => {
@@ -71,17 +57,7 @@ import { useNavigate } from "react-router-dom";
     if (otpStatus == "fullfilled") {
       setShow(true);
       setGettingOtp(false);
-      toast.success("OTP sent to your email", {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
+      showToast.success("OTP sent to your email");
     }
 
     dispatch(resetOtpStatus());
@@ -107,7 +83,7 @@ import { useNavigate } from "react-router-dom";
       </div>
     </div>
   );
-}
+};
 
 function GetOtp({ email, isSubmitting }) {
   const dispatch = useDispatch();
@@ -136,19 +112,9 @@ function OTPInput({ email, otp, setOtp, isSubmitting = false }) {
     const code = otp.toString().replaceAll(",", "");
 
     if (code.length == 4) {
-        dispatch(verifyOtpThunk({email,otp:code}))
+      dispatch(verifyOtpThunk({ email, otp: code }));
     } else {
-      toast.error("Enter 4 digits", {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
+      showToast.error("Enter 4 digits");
     }
   }
 
@@ -169,8 +135,6 @@ function OTPInput({ email, otp, setOtp, isSubmitting = false }) {
     </div>
   );
 }
-
-
 
 function Button({ handleSubmit, title, className, isSubmitting }) {
   return (
@@ -203,5 +167,4 @@ function Button({ handleSubmit, title, className, isSubmitting }) {
   );
 }
 
-
-export default VerifyOpt
+export default VerifyOpt;
