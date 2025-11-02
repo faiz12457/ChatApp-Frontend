@@ -35,7 +35,7 @@ function ChatItem({
     
   return (
     <>
-    <NavLink to={`/chat/${data._id}`} state={{participants:data.participants}}>
+    <NavLink to={`/chat/${data?._id}`} state={{participants:data.participants}}>
       <div onClick={()=>setSelected(_id)} onContextMenu={(e)=>handleContextMenu(e,_id)}
         className={`h-20  p-4 bg-amber-700  w-full  relative
       transition-colors  duration-150
@@ -43,13 +43,14 @@ function ChatItem({
        selected==_id ? "bg-zinc-200 " : "bg-zinc-50"
      } `}
       >
+
         <img
-          src={friend?.profilePic?.url||'/favicon.svg'}
+          src={data.IsGroupChat? data.groupChatPic|| "/favicon.svg" :friend?.profilePic?.url||'/favicon.svg'}
           className="size-12 rounded-full object-cover "
         />
         <div>
           <p className="text-xl mix-blend-difference font-medium text-white">
-            {friend.userName}
+            {data.IsGroupChat?data.name:friend.userName}
           </p>
 
           {newMessageAlert && (

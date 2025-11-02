@@ -10,9 +10,9 @@ export const useOutsideClick = (handler) => {
       }
     }
 
-    document.addEventListener("click", handleClick);
+    document.addEventListener("mousedown", handleClick);
 
-    return () => document.removeEventListener("click", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
   return ref;

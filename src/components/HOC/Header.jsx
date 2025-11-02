@@ -47,7 +47,8 @@ function Header() {
      style={{backgroundColor:orange}}
      className=' flex px-3  text-white items-center  flex-grow  h-16 '>
 
-    <div className=''>
+    <div className=' flex gap-2 items-center'>
+    <img src='/favicon.svg' className='size-10 object-cover' />
         <p className='hidden sm:block font-bold text-xl'>Quick Chat</p>
     </div>    
 

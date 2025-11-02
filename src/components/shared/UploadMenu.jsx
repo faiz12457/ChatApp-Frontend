@@ -1,25 +1,45 @@
-import React, { useRef } from "react";
-import { FaImage, FaMusic, FaVideo, FaFileUpload } from "react-icons/fa";
-import { motion } from "motion/react";
+import React, { useRef, useState } from "react";
 
-const UploadMenu = ({ ref,setImages }) => {
+import { motion } from "motion/react";
+import { v4 as uuid } from "uuid";
+import { FaImage, FaMusic, FaVideo, FaFileUpload, FaTimes } from "react-icons/fa";
+
+const UploadMenu = ({ ref, setSelectedFiles,selectedFiles, showMenu }) => {
   const imageInputRef = useRef(null);
   const audioInputRef = useRef(null);
   const videoInputRef = useRef(null);
   const fileInputRef = useRef(null);
+  
 
   const handleUpload = (ref) => {
     if (ref.current) {
-      ref.current.click(); 
+      ref.current.click();
     }
   };
 
   const handleFileChange = (event, type) => {
-    const file = event.target.files;
-    if (file) {
-      setImages(file);
-    }
+    const files = Array.from(event.target.files);
+    if (!files.length) return;
+    const newFiles = files.map((file) => {
+      return {
+        id: uuid(),
+        file,
+        name: file.name,
+        type
+      };
+    });
+
+    setSelectedFiles((prev) => {
+      const updated = [...prev, ...newFiles];
+      
+      return updated;
+    });
+
+    event.target.value = null;
+   showMenu(false);
   };
+
+ 
 
   const menuItems = [
     {
@@ -67,10 +87,24 @@ const UploadMenu = ({ ref,setImages }) => {
       ref={ref}
       className="bg-white absolute -top-[120px] z-40 rounded-md shadow-lg w-44 py-2"
     >
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
       {menuItems.map((item, index) => (
         <div key={index}>
           <button
-          type="button"
+            type="button"
             onClick={() => handleUpload(item.ref)}
             className="flex items-center gap-3 w-full px-3 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
           >
@@ -79,7 +113,7 @@ const UploadMenu = ({ ref,setImages }) => {
           </button>
           {/* Hidden input for each type */}
           <input
-          multiple
+            multiple
             type="file"
             accept={item.accept}
             ref={item.ref}

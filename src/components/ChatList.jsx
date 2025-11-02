@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../api";
 import { useSocket } from "../context/socketContext";
 import { NEW_CHAT } from "../event";
+import { useParams } from "react-router-dom";
 function ChatList({
   chats = [1, 2, 4, 5, 6],
   chatId,
@@ -21,8 +22,12 @@ function ChatList({
     },
   });
 
+  const params=useParams();
+
+  const {chatId:selectedId}=params
+
   const [id, setId] = useState(null);
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(selectedId||null);
 
   useEffect(() => {
     socket.on(NEW_CHAT, (data) => {
@@ -42,13 +47,13 @@ function ChatList({
       {data?.map((data, index) => {
         return (
           <ChatItem
-            key={data._id}
+            key={data?._id}
             selected={selected}
             data={data}
             setSelected={setSelected}
             setId={setId}
             id={id}
-            _id={data._id}
+            _id={data?._id}
             handleDeleteChat={handleDeleteChat}
             index={index}
           />

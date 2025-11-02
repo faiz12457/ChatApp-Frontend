@@ -13,11 +13,12 @@ const format = {
   avi: "video",
   m4a: "audio",
   flac: "audio",
+  jfif:'image'
 };
 
-export const getFileFormat = (url = "") => {
+export const getFileFormat = (ext) => {
 
-  const fileExt = url.split(".").pop()?.toLowerCase();
+//  const fileExt = url.split(".").pop()?.toLowerCase();
 
-  return format[fileExt] || "file";
+  return format[ext] || "file";
 };

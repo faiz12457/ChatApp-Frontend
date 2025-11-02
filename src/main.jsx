@@ -14,7 +14,7 @@ import { Auth } from "./context/AuthContext.jsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")).render(
-  // <StrictMode>
+ 
   <Provider store={store}>
     <HelmetProvider>
       <Title />
@@ -29,5 +29,5 @@ createRoot(document.getElementById("root")).render(
       </QueryClientProvider>
     </HelmetProvider>
   </Provider>
-  //  </StrictMode>
+
 );
