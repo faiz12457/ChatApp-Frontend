@@ -3,12 +3,12 @@ import { AppLayout } from "../components/HOC/appLayout";
 import { rgbGrey } from "../constraints/colors";
 import { MdAttachFile } from "react-icons/md";
 import { IoIosSend } from "react-icons/io";
-import {FaTimes } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 import UploadMenu from "../components/shared/UploadMenu";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 import { AnimatePresence } from "motion/react";
 import Message from "../components/shared/Message";
-import { NEW_MESSAGE_ALERT, NEWMESSAGE } from "../event";
+import { DELETED_MESSAGE, NEW_MESSAGE_ALERT, NEWMESSAGE } from "../event";
 import { useLocation, useParams } from "react-router-dom";
 import { useSocket } from "../context/socketContext";
 import {
@@ -70,7 +70,7 @@ function Chat() {
   const socket = useSocket();
   const queryClient = useQueryClient();
   const { chatId } = params;
-  const participants = location.state.participants ?? {};
+  const participants = location.state?.participants ?? {};
 
   const ref = useOutsideClick(() => showMenu(false));
   const bottomRef = useRef(null);
@@ -96,7 +96,10 @@ function Chat() {
     });
 
   const allMessages =
-    data?.pages.flatMap((page) => page.messages).reverse() ?? [];
+    data?.pages
+      .flatMap((page) => page.messages)
+      .filter((msg) => !msg.deletedFor?.includes(user._id))
+      .reverse() ?? [];
 
   const firstLoad = useRef(false);
 
@@ -148,7 +151,6 @@ function Chat() {
     },
 
     onSuccess: ({ message: serverMessage }, { tempId, incomingChatId }) => {
-      
       setMessage("");
       setSelectedFiles([]);
 
@@ -189,13 +191,13 @@ function Chat() {
 
     e.preventDefault();
 
-    if (message == "" && !selectedFiles) return;
+    if (message == "" && selectedFiles.length == 0) return;
     let tempUrl = [];
 
     if (selectedFiles) {
-      selectedFiles.forEach(({ file ,id}) => {
+      selectedFiles.forEach(({ file, id }) => {
         let url = URL.createObjectURL(file);
-        formData.append('file',file);
+        formData.append("file", file);
         tempUrl.push({
           url,
           format: file.name.split(".").pop(),
@@ -225,13 +227,72 @@ function Chat() {
 
     shouldScrollToBottom.current = true;
     setMessage("");
-  setSelectedFiles([]);
+    setSelectedFiles([]);
     messageMutation.mutate({
       formData,
       tempMsg: newMsg,
       tempId,
       incomingChatId: chatId,
     });
+  }
+
+  const deleteForEveryOneMutation = useMutation({
+    mutationFn: async (id) => {
+      const res = await api.delete(`/chat/deleteForEveryOne/${id}`);
+      return res.data;
+    },
+
+    onSuccess: ({ message }) => {
+      socket.emit(DELETED_MESSAGE,{message,id:chatId,participants});
+    
+      queryClient.setQueryData(["messages", chatId], (old) => {
+        if (!old) return old;
+
+        const newPages = old.pages.map((page) => ({
+          ...page,
+          messages: page.messages.map((m) =>
+            m._id == message._id ? {...m,deleteForEveryOne:true} : m
+          ),
+        }));
+
+        return { ...old, pages: newPages };
+      });
+
+
+
+    },
+  });
+
+  function handleDeleteForEveryone(id) {
+    deleteForEveryOneMutation.mutate(id);
+  }
+
+  const deleteForMeMutation = useMutation({
+    mutationFn: async (id) => {
+      const res = await api.delete(`/chat/deleteForMe/${id}`);
+      return res.data;
+    },
+
+    onSuccess: ({ messageId }) => {
+      queryClient.setQueryData(["messages", chatId], (old) => {
+        if (!old) return old;
+
+        const newPages = old.pages.map((page) => ({
+          ...page,
+          messages: page.messages.filter((m) => m._id !== messageId),
+        }));
+
+        return { ...old, pages: newPages };
+      });
+    },
+
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  function handleDeleteForMe(id) {
+    deleteForMeMutation.mutate(id);
   }
 
   // useEffect(() => {
@@ -271,17 +332,29 @@ function Chat() {
       shouldScrollToBottom.current = true;
     });
 
-    socket.on(NEW_MESSAGE_ALERT, (data) => {
-      //  console.log(data);
-    });
+
+    socket.on(DELETED_MESSAGE,({message,id})=>{
+
+        queryClient.setQueryData(["messages", id], (old) => {
+        if (!old) return old;
+
+        const newPages = old.pages.map((page) => ({
+          ...page,
+          messages: page.messages.map((m) =>
+            m._id == message._id ? {...m,deleteForEveryOne:true} : m
+          ),
+        }));
+
+        return { ...old, pages: newPages };
+      });
+    })
 
     return () => {
       socket.off(NEWMESSAGE);
-      socket.off(NEW_MESSAGE_ALERT);
+      socket.off(DELETED_MESSAGE);
+      // socket.off(NEW_MESSAGE_ALERT);
     };
   }, [socket]);
-
- 
 
   return (
     <>
@@ -292,19 +365,24 @@ function Chat() {
         <div className="p-2 max-h-[480px] h-full flex fkex-1   overflow-y-auto flex-col gap-4 w-full">
           <div ref={fetchRef}></div>
           {allMessages?.map((m, index) => (
-            <Message key={index} user={user} message={m} />
+            <Message
+              key={index}
+              user={user}
+              message={m}
+              onDeleteForEveryone={handleDeleteForEveryone}
+              onDeleteForMe={handleDeleteForMe}
+            />
           ))}
 
           <div className="" ref={bottomRef}></div>
         </div>
 
-          <SelectedFiles
-        setSelectedFiles={setSelectedFiles}
-        selectedFiles={selectedFiles}
-      />
+        <SelectedFiles
+          setSelectedFiles={setSelectedFiles}
+          selectedFiles={selectedFiles}
+        />
       </div>
 
-    
       <form
         onSubmit={handleSubmit}
         className="h-[54px] relative   p-4  flex gap-2 items-center"
@@ -353,7 +431,6 @@ function Chat() {
 
 export default AppLayout()(Chat);
 
-
 function SelectedFiles({ selectedFiles = [], setSelectedFiles }) {
   const removeFile = (id) => {
     setSelectedFiles((prev) => prev.filter((p) => p.id !== id));
@@ -381,4 +458,3 @@ function SelectedFiles({ selectedFiles = [], setSelectedFiles }) {
     </div>
   );
 }
-
