@@ -106,7 +106,7 @@ function Message({ message, user, onDeleteForMe, onDeleteForEveryone }) {
               className=" w-full flex gap-1 items-center text-left
            px-3 py-1 cursor-pointer hover:bg-gray-100"
             >
-              <RiDeleteBin6Line size={16} /> Delete for Me
+              <RiDeleteBin6Line size={16} />{isSender?  "Delete for Me":"Delete Message"}
             </button>
             {isSender && (
               <button

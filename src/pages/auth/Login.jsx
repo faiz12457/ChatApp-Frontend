@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import AuthInput from "../../components/auth/AuthInput";
 import { loginSchema } from "../../schemas/loginSchema";
 import { AuthButton } from "../../components/auth/AuthButton";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   loginThunk,
@@ -13,7 +13,6 @@ import {
   selectLoginStatus,
   selectLoginUser,
 } from "../../redux/slices/auth/authSlice";
-import { Slide, toast } from "react-toastify";
 import { showToast } from "../../Toast/toast";
 
 function Login() {
@@ -22,9 +21,9 @@ function Login() {
   const loginStatus = useSelector(selectLoginStatus);
   const loginErrors = useSelector(selectLoginErrors);
   const loginUser = useSelector(selectLoginUser);
-
-
-    useEffect(() => {
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+  useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token && loginUser?.isVerified) {
       navigate("/");
@@ -48,14 +47,13 @@ function Login() {
 
   useEffect(() => {
     if (loginStatus === "fullfilled" && loginUser.isVerified == true) {
-        
-      showToast.success("Login Successfull")
+      showToast.success("Login Successfull");
 
-      navigate("/");
+      navigate(from);
     }
 
     if (loginStatus === "fullfilled" && loginUser.isVerified == false) {
-    showToast.success("Login Successfull, Verify ")
+      showToast.success("Login Successfull, Verify ");
 
       navigate("/verifyOtp");
     }
@@ -66,7 +64,7 @@ function Login() {
 
   useEffect(() => {
     if (loginErrors) {
-    showToast.error(loginErrors)
+      showToast.error(loginErrors);
     }
   }, [loginErrors]);
 
@@ -130,18 +128,23 @@ function Login() {
           />
           <AuthButton text={"Login Now"} isSubmitting={isSubmitting} />
 
-<div className="flex justify-between">
-          <p className="text-xs font-medium text-[#654A55]">
-            Create an account{" "}
-            <NavLink
-              to={"/register"}
-              className=" hover:underline text-[#8c36ff]"
-            >
-              Click here
-            </NavLink>
-          </p>
+          <div className="flex justify-between">
+            <p className="text-xs font-medium text-[#654A55]">
+              Create an account{" "}
+              <NavLink
+                to={"/register"}
+                className=" hover:underline text-[#8c36ff]"
+              >
+                Click here
+              </NavLink>
+            </p>
 
-       <NavLink to={'/forgotPassword'}  className=" text-xs hover:underline text-[#8c36ff]">Forgot Password?</NavLink>
+            <NavLink
+              to={"/forgotPassword"}
+              className=" text-xs hover:underline text-[#8c36ff]"
+            >
+              Forgot Password?
+            </NavLink>
           </div>
         </form>
       </div>

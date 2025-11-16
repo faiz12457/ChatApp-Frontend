@@ -1,25 +1,20 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectLoginUser } from "../../redux/slices/auth/authSlice";
 
-
 function ProtectedRoute({ Component }) {
-  const navigate = useNavigate();
   const loginUser = useSelector(selectLoginUser);
+  const token = localStorage.getItem("accessToken");
+  const location = useLocation();
 
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      navigate("/login");
-      return;
-    } else if (token && loginUser?.isVerified === false) {
-      navigate("/verifyOtp");
-      return;
-    }
+  if (!token) {
+    return <Navigate to={"/login"} state={{ from: location }} />;
+  }
 
-    
-  }, [loginUser]);
+  if (token && loginUser?.isVerified === false) {
+    return <Navigate to={"/verifyOtp"} state={{ from: location }} />;
+  }
 
   return <>{Component}</>;
 }

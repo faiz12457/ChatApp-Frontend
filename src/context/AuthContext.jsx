@@ -8,7 +8,7 @@ import Loader from "../Loaders/Loader";
 
 export const AuthContext = createContext(null);
 
-const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);
 
 export const Auth = ({ children }) => {
   const dispatch = useDispatch();

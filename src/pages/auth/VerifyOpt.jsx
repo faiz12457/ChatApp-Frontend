@@ -17,7 +17,6 @@ import {
   setUserVerfied,
   verifyOtpThunk,
 } from "../../redux/slices/auth/authSlice";
-import { Slide, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../Toast/toast";
 

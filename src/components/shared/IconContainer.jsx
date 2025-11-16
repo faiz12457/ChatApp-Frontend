@@ -1,24 +1,38 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
-import { motion } from 'motion/react'
-function IconContainer({icon,title,handler,children}) {
-    const [visible,setVisible]=useState(false)
+import { AnimatePresence, motion } from "motion/react";
+function IconContainer({ icon, title, handler, children }) {
+  const [visible, setVisible] = useState(false);
   return (
-    <div onClick={handler} onMouseEnter={()=>setVisible(true)}  onMouseLeave={()=>setVisible(false)} className='size-10
+    <div
+      onClick={handler}
+      onMouseEnter={() => setVisible(true)}
+      onMouseLeave={() => setVisible(false)}
+      className="size-10
      rounded-full cursor-pointer relative
       hover:bg-zinc-400/45 transition-colors
-       text-white flex justify-center items-center'>{icon}
+       text-white flex justify-center items-center"
+    >
+      {icon}
 
-      {visible&&  <motion.span 
-        initial={{y:-5, opacity:0, scale:0}}
-        animate={{y:0, opacity:1,scale:1}}
-        transition={{duration:0.25,ease:"easeInOut"}}
-         className='absolute -bottom-8 bg-[#595959]
-         text-white text-xs px-2 py-1 rounded w-fit block text-nowrap'>{title}</motion.span>}
+      <AnimatePresence>
+        {visible && (
+          <motion.span
+            initial={{ y: -5, opacity: 0, scale: 0 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: -5, opacity: 0, scale: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="absolute -bottom-8 bg-[#595959]
+         text-white text-xs px-2 py-1 rounded w-fit block text-nowrap"
+          >
+            {title}
+          </motion.span>
+        )}
+      </AnimatePresence>
 
-         {children}
-       </div>
-  )
+      {children}
+    </div>
+  );
 }
 
-export default IconContainer
+export default IconContainer;
